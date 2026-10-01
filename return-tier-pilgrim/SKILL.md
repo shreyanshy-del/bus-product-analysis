@@ -66,5 +66,11 @@ Three Downloads copies of Q1 (`OVERALL`, `BY_TIER`, `BY_TIER_USER`) were the sam
 | Varanasi / Ayodhya / Prayagraj funnels | [pilgrim_top_sd_pairs/](references/pilgrim_top_sd_pairs/) |
 | UPSRTC operator 25946 | `UPSRTC_25946_*.sql`, [Jun–Aug high/low](references/UPSRTC_Pilgrim_HighLow_Guest_HeavyRBID_JunAug2026.sql) |
 | UP pilgrim guest sessions | [IND_UP_UPPilgrim_Guest_Fraud_Android_Sessions_14d.sql](references/IND_UP_UPPilgrim_Guest_Fraud_Android_Sessions_14d.sql) |
+| Forward SRP → return SRP in 14 days (Android/iOS, pilgrim `lis.city_tagging`) | [pilgrim_fwd_ret_srp_14d.sql](references/pilgrim_fwd_ret_srp_14d.sql), [\_pilgrim_fwd_ret_srp.sql](references/_pilgrim_fwd_ret_srp.sql) |
+| Forward only | [\_pilgrim_fwd_only.sql](references/_pilgrim_fwd_only.sql) |
+| Return users and sessions, variant on the return SRP | [pilgrim_return_reconciled_users_sessions.sql](references/pilgrim_return_reconciled_users_sessions.sql) |
+| 23–26 Aug forward window | [\_pilgrim_23_26.sql](references/_pilgrim_23_26.sql), light scan [\_pilgrim_23_26_light.sql](references/_pilgrim_23_26_light.sql) |
+
+On these forward/return files, forward dates are the static `date_params` window. The return window is 14 days from each forward session or TIN, not a second fixed calendar range. Pilgrim cities come from `lis.city_tagging` where `category = 'Pilgrim'`.
 
 Short date-edit templates without the inlined map: `Q1_funnel_throughput_14d_dbd_usertype.sql`, `Q2_return_trip_rate_onward_transactor_base_dbd_usertype.sql`, `Q3_days_since_onward_doi_return_session_txn.sql`. Paste `dest_ids` from the matching `_dest_ids_*_cte.sql`.

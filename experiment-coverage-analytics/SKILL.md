@@ -1,10 +1,11 @@
 ---
 name: experiment-coverage-analytics
 description: >-
-  redBus India experiment and coverage SQL: Insurance Lite AB funnel and attach,
-  Primo (hft = 2) operator coverage on a fixed SD list, and Mobweb daily login
-  and signup funnels. Use when the user asks about Insurance Lite, INSURANCE_LITE_AB,
-  Primo BO, Primo operator, Mobweb login, Mobweb signup, or mweb funnel.
+  redBus India experiment and coverage SQL: Insurance Lite AB, iOS addons
+  payment-page AB (TG/TI/FC), Primo (hft = 2) operator coverage, and Mobweb
+  daily login and signup funnels. Use when the user asks about Insurance Lite,
+  INSURANCE_LITE_AB, ADDONS_PAYMENT_PAGE_AB_IOS, Primo BO, Mobweb login, or
+  mweb funnel.
 ---
 
 # Insurance Lite, Primo, Mobweb
@@ -30,6 +31,24 @@ Channel is Android IND. Confirmed step in the Q1 funnel is `confirm_order_detail
 | ASP × TI | [insurance_lite_ab_q3_asp_ti.sql](references/insurance_lite_ab_q3_asp_ti.sql) |
 | ASP bucket / variant | [insurance_lite_ab_q3a_asp_bucket.sql](references/insurance_lite_ab_q3a_asp_bucket.sql), [insurance_lite_ab_q3b_asp_variant.sql](references/insurance_lite_ab_q3b_asp_variant.sql) |
 | GA funnel | [insurance_lite_ab_q4_ga_funnel.sql](references/insurance_lite_ab_q4_ga_funnel.sql) |
+
+## Addons payment page AB (iOS)
+
+Variant from `channel_exp_info`: `ADDONS_PAYMENT_PAGE_AB_IOS:V0` through `V5`. Channel is iOS `MOBILE_APP`. Confirmed iOS tickets use `sales_channel = 'RB:MOBILEWEB#iosapp'`, `event_type = 101`.
+
+- **Coverage** = confirmed ticket whose tags contain the addon (TG / TI / FC)
+- **Attach** = `addons` JSON contains that tag
+- **Attach %** = attach ÷ coverage
+- **GA seen** = `CIAddonShown` or `PaymentPageLoad` (`event_group = 'ab_exp_addon_payment'`, `event_src = 'iOS'`)
+- **GA coverage** = confirmed among seen ÷ seen
+
+The operator exclusion list inside Q2 stays as written.
+
+| Ask | File |
+|---|---|
+| Funnel by variant | [addons_payment_page_ab_ios_q1_funnel.sql](references/addons_payment_page_ab_ios_q1_funnel.sql) |
+| Ticket coverage and attach | [addons_payment_page_ab_ios_q2_ticket_attach.sql](references/addons_payment_page_ab_ios_q2_ticket_attach.sql) |
+| GA seen, coverage, attach | [addons_payment_page_ab_ios_q3_ga_coverage_attach.sql](references/addons_payment_page_ab_ios_q3_ga_coverage_attach.sql) |
 
 ## Primo operators
 
