@@ -1,1 +1,5 @@
 .DS_Store
+.venv/
+data/*.csv
+data/*.live.json
+backend/__pycache__/
