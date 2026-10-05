@@ -66,3 +66,7 @@ Each skill runs the SQL in its `references/` folder. Change only the date window
 ```
 
 Dashboard lives in **this existing repo**. Do not use `shreyanshy-del/CR-Analytics`.
+
+## Mac (simplest)
+
+Double-click [`CR_Analyser.html`](CR_Analyser.html) — no server needed. See [`OPEN_ON_MAC.md`](OPEN_ON_MAC.md).
