@@ -16,10 +16,19 @@ Cursor Agent skills for redBus India bus analyses, including **CR Analyser**.
 ## Layout
 
 ```
-skills/cr-analyser/          # CR Analyser (gh skill path)
-  SKILL.md
-  references/cr_analyser_1d.sql
-women-funnel-analytics/      # other domain skills (root-level)
+skills/
+  cr-analyser/                 # CR Analyser
+  cr-dim-*/                    # first dimension cuts
+  women-funnel-analytics/      # also mirrored under skills/ for Agent Skills
+  return-tier-pilgrim/
+  lmb-newbus-analytics/
+  experiment-coverage-analytics/
+  toilet-cohort-analytics/
+  seat-bus-images/
+  metro-surface-analytics/
+  filter-usage-analytics/
+  syed-athena-queries/
+women-funnel-analytics/        # root-level kept for backward compat
 …
 ```
 
@@ -27,13 +36,12 @@ women-funnel-analytics/      # other domain skills (root-level)
 
 ```bash
 cp -R skills/cr-analyser ~/.cursor/skills/cr-analyser
-cp -R women-funnel-analytics ~/.cursor/skills/
-cp -R return-tier-pilgrim ~/.cursor/skills/
-cp -R lmb-newbus-analytics ~/.cursor/skills/
-cp -R experiment-coverage-analytics ~/.cursor/skills/
-cp -R toilet-cohort-analytics ~/.cursor/skills/
-cp -R seat-bus-images ~/.cursor/skills/
-cp -R metro-surface-analytics ~/.cursor/skills/
+cp -R skills/cr-dim-* ~/.cursor/skills/
+for s in women-funnel-analytics return-tier-pilgrim lmb-newbus-analytics          experiment-coverage-analytics toilet-cohort-analytics seat-bus-images          metro-surface-analytics filter-usage-analytics syed-athena-queries; do
+  cp -R "skills/$s" ~/.cursor/skills/"$s"
+done
+# root-level packs still work:
+# cp -R women-funnel-analytics ~/.cursor/skills/
 ```
 
 Or install CR Analyser from GitHub:
