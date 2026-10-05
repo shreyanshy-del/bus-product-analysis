@@ -11,6 +11,34 @@ import pandas as pd
 from mock_data import ensure_sample_csvs
 from live_athena import data_mode
 
+# Destination city → Mehar tier. IDs are the listing in
+# return-tier-pilgrim/references/_city_tier_map_cte.sql.
+# Names come from the same top-SD files (122 Bangalore, 123 Chennai, …).
+# A destination that is not in that map is Tier 3.
+CITY_TIER = {
+    "ahmedabad": "Tier 1",
+    "bangalore": "Tier 1",
+    "chennai": "Tier 1",
+    "delhi": "Tier 1",
+    "hyderabad": "Tier 1",
+    "jaipur": "Tier 1",
+    "kolkata": "Tier 1",
+    "madurai": "Tier 1",
+    "mumbai": "Tier 1",
+    "pune": "Tier 1",
+    "bhubaneswar": "Tier 2",
+    "kanpur": "Tier 2",
+    "lucknow": "Tier 2",
+    "surat": "Tier 2",
+}
+TIER_ORDER = ["Tier 1", "Tier 2", "Tier 3", "Pilgrim", "Leisure"]
+
+
+def dest_tier(name: str) -> str:
+    key = str(name).strip().lower().split("(")[0].strip()
+    return CITY_TIER.get(key, "Tier 3")
+
+
 FUNNEL_STEPS = [
     ("SRP", "search_sessions", None, "SRP Sessions"),
     ("SL", "seatlayout_sessions", "search_sessions", "SRP to SL"),
@@ -309,7 +337,7 @@ class CRDataEngine:
 
     def dimension(self, dim: str, **filters) -> dict:
         dim = dim.lower()
-        if dim in ("region", "dbd") and self.slices is not None:
+        if dim in ("region", "dbd", "sd", "sd_tier") and self.slices is not None:
             return self._dimension_slices(dim, **filters)
         if dim not in ("user_type", "platform", "language", "os"):
             if dim == "os":
@@ -342,16 +370,32 @@ class CRDataEngine:
         if filters.get("filter_user_type"):
             vals = [v.strip().upper() for v in filters["filter_user_type"].split(",")]
             df = df[df["user_type"].str.upper().isin(vals)]
-        key = "Region_Final" if dim == "region" else "dbd"
+        if dim == "sd":
+            groups = df.groupby(["Source", "Destination"], dropna=False)
+        elif dim == "sd_tier":
+            df = df.copy()
+            df["sd_tier"] = df["Destination"].map(dest_tier)
+            groups = df.groupby("sd_tier", dropna=False)
+        else:
+            key = "Region_Final" if dim == "region" else "dbd"
+            groups = df.groupby(key, dropna=False)
         rows = []
-        for val, part in df.groupby(key):
+        for val, part in groups:
             srp = float(part["SRP"].sum())
             tin = float(part["tin"].sum())
             seats = float(part["seats"].sum())
             gmv = float(part["GMV"].sum())
             sl = float(part["SL"].sum())
+            if dim == "sd":
+                src, dst = val
+                segment = f"{src} → {dst}"
+                tier = dest_tier(dst)
+            else:
+                segment = str(val)
+                tier = segment if dim == "sd_tier" else None
             rows.append({
-                "segment": str(val),
+                "segment": segment,
+                "tier": tier,
                 "cr": 100.0 * tin / srp if srp else 0,
                 "srp": srp,
                 "bookings": tin,
@@ -361,8 +405,14 @@ class CRDataEngine:
                 "discount_pct": 100.0 * part["dis_tin"].sum() / tin if tin else 0,
                 "sl_failure_rate": 100.0 * part["SL_Failure"].sum() / sl if sl else 0,
             })
-        rows.sort(key=lambda r: r["srp"], reverse=True)
-        return _clean({"dimension": dim, "rows": rows, "note": "slices grain — use CR% and shares, not absolute vs main"})
+        if dim == "sd_tier":
+            rows.sort(key=lambda r: TIER_ORDER.index(r["segment"]) if r["segment"] in TIER_ORDER else 99)
+        else:
+            rows.sort(key=lambda r: r["srp"], reverse=True)
+        note = "slices grain — use CR% and shares, not absolute vs main"
+        if dim in ("sd", "sd_tier"):
+            note = "Mehar destination tier from return-tier-pilgrim. Cities absent from that map are Tier 3."
+        return _clean({"dimension": dim, "rows": rows, "note": note})
 
     def insights(self, **filters) -> dict:
         trend = self.cr_trend(**filters)
