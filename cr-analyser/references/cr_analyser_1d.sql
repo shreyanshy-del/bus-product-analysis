@@ -1,6 +1,6 @@
 -- =============================================================================
--- India BUS CR + funnel throughput (mri_session_id grain)
--- Skill: india-cr-funnel
+-- CR Analyser — India BUS CR + funnel throughput (mri_session_id grain)
+-- Skill: cr-analyser
 --
 -- SRP  = user_interaction.search_details
 -- SL   = seat_layout_details

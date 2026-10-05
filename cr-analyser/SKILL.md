@@ -1,21 +1,23 @@
 ---
-name: india-cr-funnel
+name: cr-analyser
 description: >-
-  redBus India BUS conversion and funnel throughput at mri_session_id grain:
-  SRP from search_details, steps SL→CI→TCO→PAY→PAY_NOW→CONFIRM, CR = TIN/SRP
-  from bus_ticket_events. Enforces ordered step rates and product identity
+  CR Analyser — redBus India BUS conversion and funnel throughput at
+  mri_session_id grain: SRP from search_details, steps
+  SL→CI→TCO→PAY→PAY_NOW→CONFIRM, CR = TIN/SRP from bus_ticket_events.
+  Enforces ordered step rates and product identity
   CR = (SL/SRP)×(CI/SL)×(TCO/CI)×(PAY/TCO)×(PAY_NOW/PAY)×(CONFIRM/PAY_NOW).
-  Use when the user asks for India CR, funnel throughput, SRP to confirm,
-  TIN per SRP, or CR Analyser core funnel.
+  Use when the user asks for CR Analyser, India CR, funnel throughput,
+  SRP to confirm, or TIN per SRP.
 ---
 
-# India CR + funnel throughput
+# CR Analyser
 
-India BUS. Session grain is **`mri_session_id` only** (no route join, no channel /
-platform / usertype cut unless the user explicitly asks for a separate cut and
-accepts that the product identity is checked **within each cut**).
+India BUS conversion dashboard skill. Session grain is **`mri_session_id` only**
+(no route join, no channel / platform / usertype cut unless the user explicitly
+asks for a separate cut and accepts that the product identity is checked
+**within each cut**).
 
-Run [`references/india_cr_funnel_1d.sql`](references/india_cr_funnel_1d.sql) on
+Run [`references/cr_analyser_1d.sql`](references/cr_analyser_1d.sql) on
 Data Platform / Iceberg. Change **only** `t_start` / `t_end` (IST day =
 previous calendar day `18:30` UTC → next day `18:30` UTC).
 
@@ -79,12 +81,12 @@ Zero denominators: if any step denominator is 0, mark that step and CR as NULL a
 
 | Ask | File |
 |---|---|
-| One-day (or any window) India CR + throughput | [india_cr_funnel_1d.sql](references/india_cr_funnel_1d.sql) |
+| One-day (or any window) India CR + throughput | [cr_analyser_1d.sql](references/cr_analyser_1d.sql) |
 
 ## Workflow
 
 ```
-India CR / funnel throughput:
+CR Analyser / India CR / funnel throughput:
 - [ ] 1. Set t_start / t_end only (default one IST day)
 - [ ] 2. SRP = distinct mri_session_id on search_details, country IND
 - [ ] 3. Join every later table on mri_session_id only (restrict to SRP cohort)
