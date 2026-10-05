@@ -57,3 +57,12 @@ gh skill publish --tag v1.0.0
 ```
 
 Each skill runs the SQL in its `references/` folder. Change only the date window the user asks for. Default country is IND. Confirmed tickets use `transaction.bus_ticket_events` with `event_type = 101`.
+
+## CR Analyser dashboard
+
+```bash
+./START_HERE.sh
+# http://127.0.0.1:8080
+```
+
+Dashboard lives in **this existing repo**. Do not use `shreyanshy-del/CR-Analytics`.
