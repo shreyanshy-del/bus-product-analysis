@@ -13,10 +13,20 @@ Cursor Agent skills for redBus India bus analyses, including **CR Analyser**.
 | `seat-bus-images` | Seat-utility image CTR, NewBusImageLoaded coverage, route txn share |
 | `metro-surface-analytics` | Metro Home, Card, and Sticky on bus buddy after a metro ticket |
 
+## Layout
+
+```
+skills/cr-analyser/          # CR Analyser (gh skill path)
+  SKILL.md
+  references/cr_analyser_1d.sql
+women-funnel-analytics/      # other domain skills (root-level)
+…
+```
+
 ## Install
 
 ```bash
-cp -R cr-analyser ~/.cursor/skills/
+cp -R skills/cr-analyser ~/.cursor/skills/cr-analyser
 cp -R women-funnel-analytics ~/.cursor/skills/
 cp -R return-tier-pilgrim ~/.cursor/skills/
 cp -R lmb-newbus-analytics ~/.cursor/skills/
@@ -26,7 +36,7 @@ cp -R seat-bus-images ~/.cursor/skills/
 cp -R metro-surface-analytics ~/.cursor/skills/
 ```
 
-Or install CR Analyser from GitHub (after publish):
+Or install CR Analyser from GitHub:
 
 ```bash
 gh skill install shreyanshy-del/bus-product-analysis cr-analyser
